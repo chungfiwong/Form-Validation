@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../js/form.css">
+</head>
+<style>
+    * {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f9f9f9;
+    font-size: 1em;
+}
+
+h2 {
+    text-align: center;
+    text-decoration: underline;
+}
+
+form {
+    width: 400px;
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translate(-50%,0);
+    background-color: #eee;
+    border: 2px solid #222;
+    padding: 15px 40px 40px;
+}
+
+.row {
+    margin: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.row input[type="text"],input[type="email"], select {
+    padding: 10px 8px;
+    width: 100%;
+}
+.btn-sub {
+    background-color: cornflowerblue;
+    color: #fff;
+    border: none;
+    outline: none;
+    box-shadow: 2px 4px 40px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    padding: 12px 10px;
+}
+.btn-rst {
+    background-color: crimson;
+    color: #fff;
+    border: none;
+    outline: none;
+    box-shadow: 2px 4px 40px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    padding: 12px 10px;
+}
+
+/* error */
+.error {
+    color: crimson;
+}
+</style>
+<body>
+    <form name="cForm" onsubmit="return validate(event)" method="post">
+       <h2>Contact Form</h2>
+       <div class="row">
+           <label for="name">FullName</label>
+           <input type="text" name="name" id="name" autocomplete="off">
+           <strong class="error" id="nameErr"></strong>
+       </div>
+
+       <div class="row">
+           <label for="email">Email id</label>
+           <input type="text" name="email" id="email" autocomplete="off">
+           <strong class="error" id="emailErr"></strong>
+       </div>
+
+       <div class="row">
+           <label for="mobile">Mobile number</label>
+           <input type="text" name="mobile" id="mobile" maxlength="10" autocomplete="off">
+           <strong class="error" id="mobileErr"></strong>
+       </div>
+
+       <div class="row">
+           <label for="city">City</label>
+           <select name="city" id="city">
+               <option value="null">Choose city name</option>
+               <option value="bng">Bengaluru</option>
+               <option value="mys">Mysore</option>
+               <option value="dvg">Davanagere</option>
+               <option value="hsn">Hassan</option>
+               <option value="ckm">Chikkamagaluru</option>
+           </select>
+           <strong class="error" id="cityErr"></strong>
+       </div>
+
+       <div class="row">
+           <label for="gender">Gender</label>
+           <div class="form-inline">
+               <label>
+                   <input type="radio" name="gender" id="gender" value="male"> Male
+               </label>
+               <label>
+                   <input type="radio" name="gender" id="gender" value="female"> Female
+               </label>
+           </div>
+           <strong class="error" id="genderErr"></strong>
+       </div>
+
+       <div class="row">
+           <label for="lang">Languages (optional)</label>
+           <div class="form-inline">
+               <label>
+                   <input type="checkbox" name="lang[]" value="kannada"> Kannada
+               </label>
+               <label>
+                   <input type="checkbox" name="lang[]" value="english"> English
+               </label>
+               <label>
+                   <input type="checkbox" name="lang[]" value="hindi"> Hindi
+               </label>
+               <label>
+                   <input type="checkbox" name="lang[]" value="tamil"> Tamil
+               </label>
+               <label>
+                   <input type="checkbox" name="lang[]" value="telugu"> Telugu
+               </label>
+               <label>
+                   <input type="checkbox" name="lang[]" value="malayalam"> Malayalam
+               </label>
+           </div>
+           <strong class="error" id="langErr"></strong>
+       </div>
+
+       <div class="row">
+           <div class="btn-group">
+               <input type="submit" value="Submit" class="btn-sub">
+               <input type="reset" value="Reset" class="btn-rst">
+           </div>
+       </div>
+    </form>
+
+    <script >
+        function validate(e) {
+    e.preventDefault();
+    /* variables for each form elements */
+    var name = document.cForm.name.value;
+    var email = document.cForm.email.value;
+    var mobile = document.cForm.mobile.value;
+    var city = document.cForm.city.value;
+    var gender = document.cForm.gender.value;
+    var lang = [];
+    var checkOpt = document.getElementsByName("lang[]");
+    for(var i=0; i<checkOpt.length; i++) {
+        if(checkOpt[i].checked) {
+            /* populate lang array wih selected input values */
+            lang.push(checkOpt[i].value);
+        }
+    }
+
+    /* define an error variables */
+    var nameErr = emailErr = mobileErr = genderErr = langErr = true;
+
+    /* name validation */
+    if(name === "") {
+        printError("nameErr","Name field cannot be empty");
+    } else {
+        let regex = /^[a-zA-Z\s]+$/;
+        if(regex.test(name) === false) {
+            printError("nameErr","Please enter valid name");
+        } else {
+            printError("nameErr","");
+            nameErr = false
+        }
+    }
+
+    /* email validation */
+    if(email === "") {
+        printError("emailErr","Email field cannot be empty");
+    } else {
+        let regex = /^\S+@\S+\.\S+$/;
+        if(regex.test(email) === false) {
+            printError("emailErr","Invalid Email id");
+        } else {
+            printError("emailErr","");
+            emailErr = false;
+        }
+    }
+
+    /* mobile validation */
+    if(mobile === "") {
+        printError("mobileErr","Mobile field cannot be empty");
+    } else {
+        let regex = /^[6-9]\d{9}$/;
+        if(regex.test(mobile) === false) {
+            printError("mobileErr","");
+            mobileErr = false;
+        }
+    }
+
+    /* city validation */
+    if(city === "null") {
+        printError("cityErr", "Please select city name");
+    } else {
+        printError("cityErr", "");
+        cityErr = false;
+    }
+
+    /* gender validation */
+    if(gender === "") {
+        printError("genderErr","Please select gender");
+    } else {
+        printError("genderErr","");
+        genderErr = false;
+    }
+
+//     let data = {
+//         name: name,
+//         email: email,
+//         mobile: mobile,
+//         gender: gender,
+//         city: city,
+//         lang: lang,
+//     }
+
+//     console.log(`data =`, data);
+}
+
+/* defining a function to display the error message */
+function printError(eleId,msg) {
+    document.getElementById(eleId).innerText = msg;
+}
+    </script>
+</body>
+</html>
